@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using PlayStationSharp.Model.TrophyJsonTypes;
 
@@ -119,6 +120,21 @@ namespace PlayStationSharp.Model.TrophyJsonTypes
 
 		[JsonProperty("fromUser")]
 		public FromUser FromUser { get; set; }
+		
+		[JsonProperty("trophies")]
+		public List<TrophyInfo> Trophies { get; set; }
+		public override string ToString() => $"{NpCommunicationId}\t{TrophyTitleName}\t{TrophyTitlePlatfrom}";
+        
+    }
+
+	public class TrophyEarnUser
+	{
+		[JsonProperty("onlineId")]
+		public string OnlineId { get; set; }
+		[JsonProperty("earned")]
+		public bool Earned { get; set; }
+		[JsonProperty("earnedDate")]
+		public DateTime EarnedDate { get; set; }
 	}
 
 }
@@ -140,6 +156,30 @@ namespace PlayStationSharp.Model
 
 		[JsonProperty("trophyTitles")]
 		public IList<TrophyTitle> TrophyTitles { get; set; }
+	}
+
+	public class TrophyInfo
+	{
+		[JsonProperty("trophyId")]
+		public int Id { get; set; }
+		[JsonProperty("trophyHidden")]
+		public bool isHidden { get; set; }
+		[JsonProperty("trophyType")]
+		public string Type { get; set; }
+		[JsonProperty("trophyName")]
+		public string Name { get; set; }
+		[JsonProperty("trophyDetail")]
+		public string Detail { get; set; }
+		[JsonProperty("trophyIconUrl")]
+		public string IconUrl { get; set; }
+		[JsonProperty("trophyRare")]
+		public int Rare { get; set; }
+		[JsonProperty("trophyEarnedRate")]
+		public string EarnedRate { get; set; }
+		[JsonProperty("fromUser")]
+		public TrophyEarnUser FromUser { get; set; }
+		[JsonProperty("comparedUser")]
+		public TrophyEarnUser CompareUser { get; set; }
 	}
 
 }

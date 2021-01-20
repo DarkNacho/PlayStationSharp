@@ -8,6 +8,6 @@ namespace PlayStationSharp.Exceptions
 	{
 		public Error Error;
 
-		public PlayStationApiException(Error error) => Error = error;
+		public PlayStationApiException(Error error) : base(error.Message)=> Error = error;
 	}
 }

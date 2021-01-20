@@ -22,7 +22,8 @@ namespace PlayStationSharp.API
 		private string UserParameter =>
 			(this.OnlineId == this.Client.Account.OnlineId) ? "me" : this.OnlineId;
 
-		public List<User> Friends => _friends.Value;
+        public int TotalGames{ get; internal set; }
+        public List<User> Friends => _friends.Value;
 		public List<Trophy> Trophies => _trophies.Value;
 		public List<Story> ActivityFeed => _activityFeed.Value;
 		public Session Session => _session.Value;
@@ -108,8 +109,34 @@ namespace PlayStationSharp.API
 
 			var trophyModels = Request.SendGetRequest<TrophyModel>(url,
 				this.Client.Tokens.Authorization);
+			
+			TotalGames = trophyModels.TotalResults;
 
 			return trophyModels.TrophyTitles.Select(trophy => new Trophy(Client, trophy)).ToList();
+		}
+
+		/// <summary>
+		/// Gets all the trophies for the current account and adds it to the Trophies propety
+		/// This function might take a while to do...
+		/// </summary>
+		/// <returns></returns>
+		public List<Trophy> GetAllTrophies()
+        {
+			int offset = Trophies.Count;
+			int count = offset;
+			while (count > 0)  //Make request and quets all the trophies until it start getting yours
+			{
+				var trophies = GetTrophies(offset, 100);
+				Trophies.AddRange(trophies);
+				count = trophies.Count;
+				offset += 100;
+				if (trophies[trophies.Count - 1].Information.ComparedUser == null) break;
+			}
+
+			for (offset = Trophies.Count - 1; Trophies[offset].Information.ComparedUser == null; offset--) ;
+			Trophies.RemoveRange(offset + 1, Trophies.Count - offset - 1); //removes your trophies
+			return Trophies;
+
 		}
 
 		/// <summary>
